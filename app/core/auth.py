@@ -70,16 +70,20 @@ def show_login() -> None:
         )
 
         with st.form("login_form", clear_on_submit=False):
+            # username and password input
             username = st.text_input("Nom d'utilisateur", placeholder="ex. admin")
             password = st.text_input("Mot de passe", type="password", placeholder="mot de passe")
             submitted = st.form_submit_button("Se connecter", width='stretch')
+        # button register
         if st.button("Pas de compte ? S'inscrire"):
             st.session_state.page = "register"
             st.rerun()
 
         if submitted:
+            # verify if the required input hava a value
             if not username or not password:
                 st.warning("Veuillez remplir tous les champs.")
+            # if the required input is good run the authenticate_user
             elif authenticate_user(username, password):
                 st.session_state.authenticated = True
                 st.session_state.username = username
