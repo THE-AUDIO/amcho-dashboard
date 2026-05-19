@@ -1,34 +1,61 @@
 import pandas as pd
 
-PPI_REF_2011 = 100 # base de référence fixée par l'énoncé
+PPI_REF_2011 = 100.0
+
+def format_percentage(value: float) -> str:
+    """Ajoute le symbole % et gère les couleurs plus tard"""
+    if pd.isna(value):
+        return "0%"
+    return f"{value:.2f}%"
 
 def _base_transform(df: pd.DataFrame) -> pd.DataFrame:
-    """Filtre 2020-2026, nettoie, agrège par année"""
-    df = df[df["date"].dt.year.between(2020, 2026)].copy()
+    """Filtre les années 2020-2026 et calcule la moyenne annuelle"""
+    df = df.copy()
+    
+    # Conversion et nettoyage
+    df["date"] = pd.to_datetime(df["date"])
+    df = df[df["date"].dt.year.between(2020, 2026)]
     df["value"] = pd.to_numeric(df["value"], errors="coerce")
     df = df.dropna(subset=["value"])
-    df["year"] = df["date"].dt.year
-    yearly = df.groupby("year")["value"].mean().reset_index()
+    
+    # Moyenne annuelle
+    yearly = df.groupby(df["date"].dt.year)["value"].mean().reset_index()
     yearly.columns = ["year", "value"]
+    yearly["year"] = yearly["year"].astype(int)
+    
     return yearly
 
+
 def transform_cocoa(df: pd.DataFrame) -> pd.DataFrame:
-    """Ajoute Change et %Change pour le cacao"""
+    """Transformation complète pour Cocoa Price"""
     df = _base_transform(df)
-    df["change"]    = df["value"].diff().fillna(0)
-    df["pct_change"] = df["value"].pct_change().fillna(0) * 100
-    print(f"[TRANSFORM] Cacao : {len(df)} années calculées")
-    df.columns = ["year", "Cocoa Price", "Cocoa Price Change", "Cocoa Price %Change"]
+    
+    df["CocoaPrice"] = df["value"].round(2)
+    df["CocoaPriceChange"] = df["CocoaPrice"].diff().fillna(0).round(2)
+    df["CocoaPricePctChange"] = (df["CocoaPrice"].pct_change().fillna(0) * 100).round(2).apply(format_percentage)
+    
+    # Suppression de la colonne temporaire
+    df = df[["year", "CocoaPrice", "CocoaPriceChange", "CocoaPricePctChange"]]
+    
+    print(f"[TRANSFORM] Cocoa Price : {len(df)} années calculées (2020-2026)")
     return df
 
+
 def transform_ppi(df: pd.DataFrame) -> pd.DataFrame:
-    """Ajoute Change, %Change et %Change Reference pour le PPI"""
+    """Transformation complète pour PPI - conforme à l'énoncé"""
     df = _base_transform(df)
-    df["change"]    = df["value"].diff().fillna(0)
-    df["pct_change"] = df["value"].pct_change().fillna(0) * 100
-    # %Ref = (valeur - base 2011) / base 2011 * 100
-    df["pct_ref"]   = ((df["value"] - PPI_REF_2011) / PPI_REF_2011) * 100
-    df.columns = ["year", "PPI", "PPI Change", "PPI % Change", "PPI Change Reference"]
-    print(f"[TRANSFORM] PPI : {len(df)} années calculées")
     
+    df["PPI"] = df["value"].round(2)
+    df["PPIChange"] = df["PPI"].diff().fillna(0).round(2)
+    
+    # % de variation par rapport à l'année précédente
+    df["PPIPctChange"] = (df["PPI"].pct_change().fillna(0) * 100).round(2).apply(format_percentage)
+    
+    # PPI % Change Reference (par rapport à la base 2011 = 100)
+    # Selon l'énoncé : différence en pourcentage par rapport à 100
+    df["PPIPctChangeReference"] = ((df["PPI"] - PPI_REF_2011)).round(2).apply(format_percentage)
+    
+    df = df[["year", "PPI", "PPIChange", "PPIPctChange", "PPIPctChangeReference"]]
+    
+    print(f"[TRANSFORM] PPI : {len(df)} années calculées (2020-2026)")
     return df
