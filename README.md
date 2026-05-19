@@ -73,7 +73,7 @@ amcho-dashboard/
 
 1. **Cloner le projet**
    ```bash
-   git clone <url-du-repo>
+   git clone https://github.com/THE-AUDIO/amcho-dashboard.git
    cd amcho-dashboard
    ```
 
