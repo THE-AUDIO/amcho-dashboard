@@ -2,6 +2,8 @@
 
 Un tableau de bord interactif pour l'analyse et la visualisation des données de prix du cacao et de l'indice des prix à la production (PPI). Application web moderne construite avec **Streamlit**, incluant un système d'authentification et des visualisations avancées.
 
+🌐 **[Accédez à l'application en ligne](https://amcho-dashboard.onrender.com)**
+
 ---
 
 ## 🎯 Fonctionnalités principales
