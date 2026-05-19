@@ -72,7 +72,7 @@ def show_login() -> None:
         with st.form("login_form", clear_on_submit=False):
             username = st.text_input("Nom d'utilisateur", placeholder="ex. admin")
             password = st.text_input("Mot de passe", type="password", placeholder="mot de passe")
-            submitted = st.form_submit_button("Se connecter", use_container_width=True)
+            submitted = st.form_submit_button("Se connecter", width='stretch')
         if st.button("Pas de compte ? S'inscrire"):
             st.session_state.page = "register"
             st.rerun()
@@ -87,3 +87,6 @@ def show_login() -> None:
                 st.rerun()
             else:
                 st.error("Identifiants incorrects. Réessayez.")
+                
+                
+            

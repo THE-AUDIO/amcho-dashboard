@@ -1,56 +1,79 @@
+from typing import Dict, List
 import streamlit as st
 
-from page.auth import show_login
-from page.register import show_register
-from page.dashboard import show_dashboard
+# ── CONSTANTES DE CONFIGURATION ───────────────────────────────────────
+PAGE_TITLE = "AMCHO Dashboard"
+PAGE_ICON = "📊"
+LAYOUT = "wide"
 
-st.set_page_config(
-    page_title="AMCHO Dashboard",
-    page_icon="📊",
-    layout="wide",
-    initial_sidebar_state="expanded",
-)
-
-# ── init session state ─────────────────────────────
-if "page" not in st.session_state:
-    st.session_state.page = "login"
-
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
-
-if "username" not in st.session_state:
-    st.session_state.username = None
+# Valeurs d'état pour l'authentification
+AUTH_LOGIN = "login"
+AUTH_REGISTER = "register"
 
 
-# ── CSS global ─────────────────────────────────────
-st.markdown(
-    """
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap');
+def init_session_state() -> None:
+    """Initialise proprement toutes les variables d'état de la session."""
+    if "authenticated" not in st.session_state:
+        st.session_state.authenticated = False
+    if "username" not in st.session_state:
+        st.session_state.username = None
+    if "page" not in st.session_state:
+        st.session_state.page = AUTH_LOGIN
 
-        html, body, [class*="css"] {
-            font-family: 'DM Sans', sans-serif;
-        }
 
-        #MainMenu, footer, header { visibility: hidden; }
+def load_local_css(file_name: str) -> None:
+    """Charge et injecte de manière sécurisée un fichier CSS local."""
+    try:
+        with open(file_name, encoding="utf-8") as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    except FileNotFoundError:
+        st.warning(f"Fichier de style introuvable : {file_name}")
 
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #c8a97e; border-radius: 4px; }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
 
-# ── ROUTING UNIQUE (IMPORTANT) ─────────────────────
+def get_dashboard_pages() -> Dict[str, List[st.Page]]:
+    """Définit et retourne la structure des pages du tableau de bord."""
+    return {
+        "Menu": [
+            st.Page("pages/dashboard/01_Tableau.py",     title="Tableau récapitulatif", icon="📋"),
+            st.Page("pages/dashboard/02_Cocoa.py",       title="Prix du Cacao",         icon="🍫"),
+            st.Page("pages/dashboard/03_PPI.py",         title="PPI",                    icon="📈"),
+            st.Page("pages/dashboard/04_Comparaison.py", title="Comparaison",            icon="🔀"),
+        ]
+    }
 
-if not st.session_state.authenticated:
 
-    if st.session_state.page == "login":
-        show_login()
+def get_auth_navigation() -> st.navigation:
+    """Gère le routage d'authentification en masquant la sidebar."""
+    if st.session_state.page == AUTH_REGISTER:
+        target_page = st.Page("pages/02_Register.py", title="Inscription", icon="✍️")
+    else:
+        target_page = st.Page("pages/01_Login.py", title="Connexion", icon="🔑")
+        
+    return st.navigation([target_page], position="hidden")
 
-    elif st.session_state.page == "register":
-        show_register()
 
-else:
-    show_dashboard()
+def main() -> None:
+    """Point d'entrée principal de l'application."""
+    st.set_page_config(
+        page_title=PAGE_TITLE,
+        page_icon=PAGE_ICON,
+        layout=LAYOUT,
+    )
+
+    init_session_state()
+
+    # Exemple d'usage si vous avez un fichier global.css :
+    # load_local_css("assets/global.css")
+
+    # Détermination du routeur selon le statut de connexion
+    if not st.session_state.authenticated:
+        router = get_auth_navigation()
+    else:
+        router = st.navigation(get_dashboard_pages(), position="sidebar", expanded=True)
+
+    # Exécution de la page sélectionnée par le routeur
+    router.run()
+
+
+if __name__ == "__main__":
+    main()

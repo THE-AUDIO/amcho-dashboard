@@ -422,7 +422,7 @@ def build_sidebar() -> str:
         st.markdown('<hr class="sb-divider">', unsafe_allow_html=True)
 
         # Bouton logout en bas
-        if st.button("🚪 Se déconnecter", use_container_width=True):
+        if st.button("🚪 Se déconnecter", width='strectch'):
             st.session_state.authenticated = False
             st.session_state.username = None
             st.rerun()
@@ -464,19 +464,19 @@ def render_view(view: str, cocoa: pd.Series, ppi: pd.Series, ind: dict) -> None:
             "négatives en <span style='color:#dc2626'>rouge</span>. "
             "Prix cacao en USD/Tonne Métrique."
         )
-        st.plotly_chart(build_table(ind_f), use_container_width=True)
+        st.plotly_chart(build_table(ind_f), width='strectch')
 
     if view in ("cocoa", "all"):
         _section("Prix du Cacao (2020 – 2026)")
-        st.plotly_chart(chart_cocoa(cocoa_f), use_container_width=True, key="cocoa_chart")
+        st.plotly_chart(chart_cocoa(cocoa_f), width='strectch', key="cocoa_chart")
 
     if view in ("ppi", "all"):
         _section("PPI – Producer Price Index")
-        st.plotly_chart(chart_ppi(ppi_f), use_container_width=True, key="ppi_chart")
+        st.plotly_chart(chart_ppi(ppi_f), width='strectch', key="ppi_chart")
 
     if view in ("mixed", "all"):
         _section("Comparaison Cacao & PPI")
-        st.plotly_chart(chart_mixed(cocoa_f, ppi_f), use_container_width=True, key="mixed_chart")
+        st.plotly_chart(chart_mixed(cocoa_f, ppi_f), width='strectch', key="mixed_chart")
 
 
 # ────────────────────────────────────────────────────────────────────────────

@@ -68,7 +68,7 @@ def show_register() -> None:
             password = st.text_input("Mot de passe", type="password", placeholder="mot de passe")
             confirm_password = st.text_input("Confirmer mot de passe", type="password")
 
-            submitted = st.form_submit_button("S'inscrire", use_container_width=True)
+            submitted = st.form_submit_button("S'inscrire", width='stretch')
         if st.button("Déjà un compte ? Se connecter"):
             st.session_state.page = "login"
             st.rerun()
