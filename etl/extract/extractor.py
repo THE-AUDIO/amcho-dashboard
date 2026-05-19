@@ -1,10 +1,10 @@
 import pandas as pd
 import os
 
-BASE_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "data")
+BASE_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "datasources")
 
 def extract_cocoa() -> pd.DataFrame:
-    """Lit le CSV du prix du cacao depuis data/"""
+    """Lit le CSV du prix du cacao depuis datasources/"""
     path = os.path.join(BASE_DIR, "cocoa_price.csv")
     df = pd.read_csv(path, parse_dates=["observation_date"])
     df.columns = ["date", "value"]
