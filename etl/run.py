@@ -5,6 +5,7 @@ from extract.extractor import extract_cocoa, extract_ppi
 from transform.transformer import transform_cocoa, transform_ppi
 from model.cocoa import CocoaPrice
 from model.ppi import PPI
+from model.users import users
 
 def init_db():
     Base.metadata.create_all(engine)
