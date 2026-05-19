@@ -8,6 +8,6 @@ class users(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     
-    username: Mapped[str] = mapped_column(String, nullable=False, index=True) # type: ignore
+    username: Mapped[str] = mapped_column(String, nullable=False, index=True, unique=True) # type: ignore
     password: Mapped[str] = mapped_column(String, nullable=False)
     

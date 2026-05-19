@@ -35,19 +35,37 @@ VIEWS = {
     "🗂️ Vue complète":           "all",
 }
 
+# CHART_LAYOUT = dict(
+#     font=dict(family="DM Sans", size=11, color="#000000"),
+#     plot_bgcolor="white",
+#     paper_bgcolor="white",
+#     hovermode="x unified",
+#     margin=dict(l=50, r=20, t=30, b=40),
+#     xaxis=dict(
+#         showgrid=False,
+#         tickmode="array",
+#         tickvals=YEARS,
+#         ticktext=[str(y) for y in YEARS],
+#     ),
+#     yaxis=dict(gridcolor=GRID_COLOR, showgrid=True),
+#     legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+# )
 CHART_LAYOUT = dict(
-    font=dict(family="DM Sans", size=11, color="#4b4b4b"),
+    font=dict(family="DM Sans", size=11, color="#1a1a1a"),  # Forcé en noir/gris très foncé
     plot_bgcolor="white",
     paper_bgcolor="white",
     hovermode="x unified",
     margin=dict(l=50, r=20, t=30, b=40),
     xaxis=dict(
         showgrid=False,
-        tickmode="array",
-        tickvals=YEARS,
-        ticktext=[str(y) for y in YEARS],
+        linecolor="#4b4b4b",  # Ajoute une ligne d'axe visible
+        tickfont=dict(color="#1a1a1a", size=11) # Force la couleur des années
     ),
-    yaxis=dict(gridcolor=GRID_COLOR, showgrid=True),
+    yaxis=dict(
+        gridcolor=GRID_COLOR, 
+        showgrid=True,
+        tickfont=dict(color="#1a1a1a", size=11)
+    ),
     legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
 )
 
@@ -294,8 +312,9 @@ def chart_mixed(cocoa: pd.Series, ppi: pd.Series) -> go.Figure:
     fig.update_yaxes(title_text="<b>Cocoa Price</b> (USD/MT)", gridcolor=GRID_COLOR, secondary_y=False)
     fig.update_yaxes(title_text="<b>PPI</b> Index", secondary_y=True)
     fig.update_layout(
-        font=dict(family="DM Sans", size=11, color="#4b4b4b"),
-        plot_bgcolor="white", paper_bgcolor="white",
+        font=dict(family="DM Sans", size=11, color="#000000"),
+        # plot_bgcolor="white",
+        # paper_bgcolor="white",
         hovermode="x unified",
         margin=dict(l=50, r=60, t=30, b=40),
         title=dict(text="Comparaison Cocoa Price & PPI", font=dict(size=13)),

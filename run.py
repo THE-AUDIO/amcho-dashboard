@@ -6,12 +6,13 @@ def run_app():
     print("Lancement de l'application Streamlit...")
     subprocess.run([sys.executable, "-m", "streamlit", "run", "app/main.py"])
 
-def run_etl():
+def run_etl() -> bool:
     print("Lancement du script ETL...")
     # Removed "-m" and "python3"
     subprocess.run([sys.executable, "etl/main.py"]) 
+    return True
 
 
 if __name__ == "__main__":
-    run_etl()
-    run_app()
+    if run_etl():
+        run_app()

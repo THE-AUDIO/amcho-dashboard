@@ -97,12 +97,42 @@ def authenticate_user(username: str, password: str) -> bool:
 # ─────────────────────────────────────────────────────────────
 # Création utilisateur
 # ─────────────────────────────────────────────────────────────
+def check_user_exists(username: str) -> bool:
+    """
+    Vérifie si un utilisateur existe déjà.
+    """
+
+    try:
+        with get_session() as session:
+
+            query = text("""
+                SELECT 1
+                FROM users
+                WHERE username = :username
+            """)
+
+            result = session.execute(
+                query,
+                {"username": username}
+            ).fetchone()
+
+            return result is not None
+
+    except SQLAlchemyError as e:
+        print(f"[CHECK USER ERROR] {e}")
+        return False
+    
+    
 def create_user(username: str, plain_password: str) -> bool:
     """
     Crée un utilisateur avec mot de passe hashé.
     """
 
     try:
+        if check_user_exists(username):
+            print(f"[CREATE USER] User '{username}' already exists.")
+            return False
+        
         hashed = bcrypt.hashpw(
             plain_password.encode("utf-8"),
             bcrypt.gensalt()
