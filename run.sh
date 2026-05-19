@@ -27,13 +27,6 @@ else
     source venv/bin/activate
 fi
 
-# 2. Exécution de l'ETL
-echo "⏳ Déplacement dans ./etl et exécution de l'ETL..."
-cd etl
-python main.py
-cd ..
-
-# 3. Lancement de l'application Streamlit
-echo "🚀 Déplacement dans ./app et lancement de Streamlit..."
-cd app
-streamlit run main.py
+# 2. Exécution de l'ETL ET STREAMLIT
+echo "LOADING ..."
+python run.py

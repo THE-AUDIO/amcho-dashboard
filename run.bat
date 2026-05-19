@@ -24,22 +24,6 @@ if not exist venv (
     call venv\Scripts\activate.bat
 )
 
-:: 2. Exécution de l'ETL
-echo ⏳ Déplacement dans .\etl et exécution de l'ETL...
-cd etl
-python main.py
-if %ERRORLEVEL% NEQ 0 (
-    echo ❌ L'ETL a échoué. Arrêt du processus.
-    cd ..
-    pause
-    exit /b %ERRORLEVEL%
-)
-cd ..
-
-:: 3. Lancement de l'application Streamlit
-echo 🚀 Déplacement dans .\app et lancement de Streamlit...
-cd app
-streamlit run main.py
-
-cd ..
+echo "LOADING ..."
+python run.py
 pause
