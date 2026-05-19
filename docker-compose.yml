@@ -1,0 +1,51 @@
+services:
+  # Application Streamlit
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: amcho-dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - DATABASE_URL=postgresql://amcho_user:amcho_password@postgres:5432/amcho_db
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./app:/app/app
+      - ./etl:/app/etl
+      - ./data:/app/data
+    networks:
+      - amcho-network
+    restart: unless-stopped
+
+  # Base de données PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: amcho-postgres
+    environment:
+      - POSTGRES_USER=amcho_user
+      - POSTGRES_PASSWORD=amcho_password
+      - POSTGRES_DB=amcho_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - amcho-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U amcho_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  amcho-network:
+    driver: bridge
